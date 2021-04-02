@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ninja Game</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.row{
+			line-height: 0;
+		}
+		.wall{
+			background-color: blue;
+			height: 40px;
+			width: 40px;
+			display: inline-block;
+		}
+		.sushi{
+			background-color: black;
+			height: 40px;
+			width: 40px;
+			display: inline-block;
+			background-image: url('sushi.png');
+			background-size: contain;
+		}
+		.onigiri{
+			background-color: black;
+			height: 40px;
+			width: 40px;
+			display: inline-block;
+			background-image: url('onigiri.png');
+			background-size: contain;
+		}
+		.blank{
+			background-color: black;
+			height: 40px;
+			width: 40px;
+			display: inline-block;
+		}
+		#ninjaman{
+			background-color: black;
+			height: 40px;
+			width: 40px;
+			display: inline-block;
+			background-image: url('ninja.gif');
+			background-size: contain;
+			position: absolute;
+
+		}
+	</style>
+</head>
+<body>
+	<div id='world'></div>
+	<div id='ninjaman'></div>
+</body>
+<script type="text/javascript">
+	var onigiriscore =0, soshiscore=0, score=0;
+	var world = [
+		/*[1,1,1,1,1],
+		[1,0,2,2,1],
+		[1,2,1,2,1],
+		[1,2,2,2,1],
+		[1,2,1,2,1],
+		[1,3,3,3,1],
+		[1,2,1,2,1],
+		[1,2,2,2,1],
+		[1,2,1,2,1],
+		[1,2,2,2,1],
+		[1,2,1,2,1],
+		[1,2,2,2,1],
+		[1,1,1,1,1]*/
+	];
+	var worlddict = {
+		0: 'blank',
+		1: 'wall',
+		2: 'sushi',
+		3: 'onigiri'
+	}
+	function getRndInteger(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) ) + min;
+	}
+
+	function buildworld(){
+		for (var i = 0; i <= getRndInteger(8,15); i++) {
+			world[i]=[1];
+			for(var j=1; j<= getRndInteger(8,15); j++){
+				world[i][j]=getRndInteger(0,3);
+			}
+			world[i][world[i].length-1]=1;
+		}
+		for(var j=0; j<world[0].length; j++){
+			world[0][j]=1;
+		}
+		for(var j=0; j<world[world.length-1].length; j++){
+			world[world.length-1][j]=1;
+		}
+		for(var i=0; i< world.length; i++){
+			for(var j=world[i].length; j< 14; j++){
+				world[i][j]=1;
+			}
+		}
+	}
+	buildworld();
+	function drawworld(){
+		output = "";
+		for (var row = 0; row < world.length; row++) {
+			output += "<div class = 'row'>"
+			for (var i = 0; i < world[row].length; i++) {
+				output += "<div class = '"+worlddict[world[row][i]]+"'></div>"
+			}
+			output += "</div>"
+		}
+		document.getElementById('world').innerHTML = output;
+	}
+	
+	drawworld();
+
+	var ninjaman = {
+		x: 1,
+		y: 1
+	}
+
+	function MoveNinjaMan(){
+		document.getElementById('ninjaman').style.top = ninjaman.y * 40 +'px'
+		document.getElementById('ninjaman').style.left = ninjaman.x * 40 +'px'
+	}
+	MoveNinjaMan();
+
+	document.onkeydown = function(e){
+		if(e.keyCode == 37){//left
+			if(world[ninjaman.y][ninjaman.x -1] !=1){
+				ninjaman.x --;
+			}
+		}
+		else if(e.keyCode == 39){//right
+			if(world[ninjaman.y][ninjaman.x +1] !=1){
+				ninjaman.x ++;
+			}
+		}
+		else if(e.keyCode == 40){//down
+			if(world[ninjaman.y +1][ninjaman.x] !=1){
+				ninjaman.y ++;
+			}
+		}
+		else if(e.keyCode == 38){//up
+			if(world[ninjaman.y -1][ninjaman.x] !=1){
+				ninjaman.y --;
+			}
+		}
+
+		if(world[ninjaman.y][ninjaman.x] == 2){
+			soshiscore +=1;
+			score += 10;
+			world[ninjaman.y][ninjaman.x]=0;
+		}
+		if(world[ninjaman.y][ninjaman.x] == 3){
+			onigiriscore +=1;
+			score += 5;
+			world[ninjaman.y][ninjaman.x]=0;
+		}
+		
+		MoveNinjaMan();
+		drawworld();
+	}
+
+
+</script>
+</html>
